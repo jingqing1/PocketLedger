@@ -1,4 +1,4 @@
-package com.example.pocketledger.dataclass;
+package com.example.pocketledger.databaseclass.dataclass;
 
 public class BillComment {
     private byte[] photo; // 图片数据，使用 byte[] 类型存储

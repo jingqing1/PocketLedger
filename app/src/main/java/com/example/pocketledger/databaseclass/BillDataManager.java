@@ -8,8 +8,8 @@ import android.database.Cursor;
 import android.database.CursorWindow;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.example.pocketledger.dataclass.Bill;
-import com.example.pocketledger.dataclass.BillComment;
+import com.example.pocketledger.databaseclass.dataclass.Bill;
+import com.example.pocketledger.databaseclass.dataclass.BillComment;
 
 import java.util.ArrayList;
 
@@ -29,7 +29,7 @@ public class BillDataManager {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
 
         // 查询账单表中的数据
-        Cursor cursor = db.rawQuery("SELECT id,project_name,amount,entry_time,category FROM bills ", null);
+        Cursor cursor = db.rawQuery("SELECT id,project_name,amount,entry_time,category,is_favorite FROM bills ", null);
 
         // 遍历结果集并将数据存储到Bill对象中
         if (cursor.moveToFirst()) {
@@ -39,8 +39,12 @@ public class BillDataManager {
                 @SuppressLint("Range") double amount = cursor.getDouble(cursor.getColumnIndex("amount"));
                 @SuppressLint("Range") String entryTime = cursor.getString(cursor.getColumnIndex("entry_time"));
                 @SuppressLint("Range") String category = cursor.getString(cursor.getColumnIndex("category"));
+                @SuppressLint("Range")
+                int isFavoriteValue = cursor.getInt(cursor.getColumnIndex("is_favorite"));
+                boolean isFavorite = (isFavoriteValue == 1);
 
-                Bill bill = new Bill(id, projectName, amount, entryTime, category);
+
+                Bill bill = new Bill(id, projectName, amount, entryTime, category,isFavorite);
                 billList.add(bill);
             } while (cursor.moveToNext());
         }
@@ -144,7 +148,7 @@ public class BillDataManager {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
 
         // 执行查询
-        String query = "SELECT id, project_name, amount, entry_time, category FROM bills WHERE entry_time = ?";
+        String query = "SELECT id, project_name, amount, entry_time, category,is_favorite FROM bills WHERE entry_time = ?";
         String[] selectionArgs = {date};
         Cursor cursor = db.rawQuery(query, selectionArgs);
 
@@ -156,8 +160,12 @@ public class BillDataManager {
                 @SuppressLint("Range") double amount = cursor.getDouble(cursor.getColumnIndex("amount"));
                 @SuppressLint("Range") String entryTime = cursor.getString(cursor.getColumnIndex("entry_time"));
                 @SuppressLint("Range") String category = cursor.getString(cursor.getColumnIndex("category"));
+                @SuppressLint("Range")
+                int isFavoriteValue = cursor.getInt(cursor.getColumnIndex("is_favorite"));
+                boolean isFavorite = (isFavoriteValue == 1);
 
-                Bill bill = new Bill(id, projectName, amount, entryTime, category);
+
+                Bill bill = new Bill(id, projectName, amount, entryTime, category,isFavorite);
                 billList.add(bill);
             } while (cursor.moveToNext());
         }
@@ -178,7 +186,7 @@ public class BillDataManager {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
 
         // 执行查询
-        String query = "SELECT id, project_name, amount, entry_time, category FROM bills WHERE entry_time LIKE ?";
+        String query = "SELECT id, project_name, amount, entry_time, category,is_favorite FROM bills WHERE entry_time LIKE ?";
         if (date != null && date.length() >= 7) {
             String[] selectionArgs = {date.substring(0, 7) + "%"};
             // 继续处理其他逻辑
@@ -193,8 +201,12 @@ public class BillDataManager {
                     @SuppressLint("Range") double amount = cursor.getDouble(cursor.getColumnIndex("amount"));
                     @SuppressLint("Range") String entryTime = cursor.getString(cursor.getColumnIndex("entry_time"));
                     @SuppressLint("Range") String category = cursor.getString(cursor.getColumnIndex("category"));
+                    @SuppressLint("Range")
+                    int isFavoriteValue = cursor.getInt(cursor.getColumnIndex("is_favorite"));
+                    boolean isFavorite = (isFavoriteValue == 1);
 
-                    Bill bill = new Bill(id, projectName, amount, entryTime, category);
+
+                    Bill bill = new Bill(id, projectName, amount, entryTime, category,isFavorite);
                     billList.add(bill);
                 } while (cursor.moveToNext());
             }
@@ -215,7 +227,7 @@ public class BillDataManager {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
 
         // 执行查询
-        String query = "SELECT id, project_name, amount, entry_time, category FROM bills WHERE entry_time LIKE ?";
+        String query = "SELECT id, project_name, amount, entry_time, category,is_favorite FROM bills WHERE entry_time LIKE ?";
         String[] selectionArgs = {date.substring(0, 4) + "%"};
         Cursor cursor = db.rawQuery(query, selectionArgs);
 
@@ -227,8 +239,12 @@ public class BillDataManager {
                 @SuppressLint("Range") double amount = cursor.getDouble(cursor.getColumnIndex("amount"));
                 @SuppressLint("Range") String entryTime = cursor.getString(cursor.getColumnIndex("entry_time"));
                 @SuppressLint("Range") String category = cursor.getString(cursor.getColumnIndex("category"));
+                @SuppressLint("Range")
+                int isFavoriteValue = cursor.getInt(cursor.getColumnIndex("is_favorite"));
+                boolean isFavorite = (isFavoriteValue == 1);
 
-                Bill bill = new Bill(id, projectName, amount, entryTime, category);
+
+                Bill bill = new Bill(id, projectName, amount, entryTime, category,isFavorite);
                 billList.add(bill);
             } while (cursor.moveToNext());
         }
@@ -239,6 +255,39 @@ public class BillDataManager {
 
         return billList;
     }
+
+    public void toggleBillFavoriteStatus(int id) {
+        // 获取可写的数据库实例
+        DatabaseHelper dbHelper = new DatabaseHelper(context);
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+
+        // 查询指定id的账单数据
+        Cursor cursor = db.rawQuery("SELECT is_favorite FROM bills WHERE id=?", new String[]{String.valueOf(id)});
+
+        boolean isFavorite = false;
+        if (cursor.moveToFirst()) {
+            // 获取当前的收藏状态
+            @SuppressLint("Range")
+            int isFavoriteValue = cursor.getInt(cursor.getColumnIndex("is_favorite"));
+            isFavorite = (isFavoriteValue == 1);
+        }
+
+        cursor.close();
+
+        // 反转收藏状态
+        isFavorite = !isFavorite;
+
+        // 创建要更新的数据
+        ContentValues values = new ContentValues();
+        values.put("is_favorite", isFavorite ? 1 : 0);
+
+        // 更新指定id的数据
+        db.update("bills", values, "id=?", new String[]{String.valueOf(id)});
+
+        // 关闭数据库连接
+        db.close();
+    }
+
 
 
 }

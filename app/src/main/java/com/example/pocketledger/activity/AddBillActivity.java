@@ -12,7 +12,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.example.pocketledger.dataclass.Bill;
+import com.example.pocketledger.databaseclass.dataclass.Bill;
 import com.example.pocketledger.databaseclass.BillDataManager;
 import com.example.pocketledger.R;
 
@@ -113,7 +113,7 @@ public class AddBillActivity extends AppCompatActivity {
 
                     // 调用 insertBill() 方法，将数据存储到数据库中
                     BillDataManager billDataManager = new BillDataManager(AddBillActivity.this);
-                    billDataManager.insertBill(new Bill(0, description, amountValue, dateString, categoryId));
+                    billDataManager.insertBill(new Bill(0, description, amountValue, dateString, categoryId,false));
                     Log.d("dasdasdas", "添加成功");
 
                     descriptionEditText.setText("");

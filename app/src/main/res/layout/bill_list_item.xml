@@ -42,7 +42,6 @@
                     android:id="@+id/imageView11"
                     android:layout_width="108dp"
                     android:layout_height="69dp"
-                    android:background="#2153d6"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -117,15 +116,29 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
 
-    <TextView
-        android:id="@+id/btn_delete"
-        android:layout_width="100dp"
-        android:layout_height="match_parent"
-        android:background="#ff4757"
-        android:text="删除"
-        android:gravity="center"
-        android:textSize="20sp"
-        android:textColor="#fff"
-        />
+    <LinearLayout
+        android:layout_width="200dp"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/btn_collect"
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
+            android:background="#ffa502"
+            android:gravity="center"
+            android:text="收藏"
+            android:textColor="#fff"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/btn_delete"
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
+            android:background="#ff4757"
+            android:gravity="center"
+            android:text="删除"
+            android:textColor="#fff"
+            android:textSize="20sp" />
+    </LinearLayout>
 
 </LinearLayout>

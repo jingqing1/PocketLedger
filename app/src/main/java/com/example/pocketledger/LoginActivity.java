@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.example.pocketledger.activity.MainActivity;
+import com.example.pocketledger.databaseclass.DatabaseHelper;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -16,6 +17,7 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login1);
+        DatabaseHelper dbHelper = new DatabaseHelper(this);
 
         Button login = findViewById(R.id.btn_login);
         EditText account = findViewById(R.id.ed_e_mail);

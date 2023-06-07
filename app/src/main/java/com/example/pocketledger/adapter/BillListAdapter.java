@@ -1,24 +1,25 @@
 package com.example.pocketledger.adapter;
+
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.pocketledger.R;
 import com.example.pocketledger.activity.BillDetailsActivity;
-import com.example.pocketledger.activity.MainActivity;
 import com.example.pocketledger.databaseclass.BillDataManager;
-import com.example.pocketledger.dataclass.Bill;
+import com.example.pocketledger.databaseclass.dataclass.Bill;
 import com.example.pocketledger.in.OnBillDeleteListener;
 
 import java.util.ArrayList;
-
-import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator;
 
 public class BillListAdapter extends RecyclerView.Adapter<BillListAdapter.ViewHolder> {
     private ArrayList<Bill> billList;
@@ -61,18 +62,36 @@ public class BillListAdapter extends RecyclerView.Adapter<BillListAdapter.ViewHo
         holder.noteTextView.setText(currentBill.getProjectName());
         holder.btnDelete.setText("删除");
 
-            holder.btnDelete.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    BillDataManager billDataManager = new BillDataManager(context);
-                    billDataManager.deleteBillById(currentBill.getId());
-                    if (onBillDeleteListener != null) {
-                        onBillDeleteListener.onBillDeleted();
-                    }
+        if (!currentBill.isFavorite()) {
+            holder.favoriteColor.setBackgroundColor(Color.parseColor("#eccc68"));
+        } else {
+            holder.favoriteColor.setBackgroundColor(Color.parseColor("#2153d6"));
 
+        }
+
+        BillDataManager billDataManager = new BillDataManager(context);
+
+        holder.btnDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                billDataManager.deleteBillById(currentBill.getId());
+                if (onBillDeleteListener != null) {
+                    onBillDeleteListener.onBillDeleted();
                 }
-            });
 
+            }
+        });
+
+        holder.btnFavorite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                billDataManager.toggleBillFavoriteStatus(currentBill.getId());
+                if (onBillDeleteListener != null) {
+                    onBillDeleteListener.onBillDeleted();
+                }
+            }
+        });
 
 
     }
@@ -83,12 +102,15 @@ public class BillListAdapter extends RecyclerView.Adapter<BillListAdapter.ViewHo
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        TextView btnFavorite;
         TextView typeTextView;
         TextView dateTextView;
         TextView amountTextView;
         TextView noteTextView;
 
         TextView btnDelete;
+
+        ImageView favoriteColor;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -97,6 +119,8 @@ public class BillListAdapter extends RecyclerView.Adapter<BillListAdapter.ViewHo
             amountTextView = itemView.findViewById(R.id.tvAmount);
             noteTextView = itemView.findViewById(R.id.tvNote);
             btnDelete = itemView.findViewById(R.id.btn_delete);
+            favoriteColor = itemView.findViewById(R.id.imageView12);
+            btnFavorite = itemView.findViewById(R.id.btn_collect);
             itemView.setOnClickListener(this);
         }
 

@@ -18,7 +18,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
-import com.example.pocketledger.dataclass.BillComment;
+import com.example.pocketledger.databaseclass.dataclass.BillComment;
 import com.example.pocketledger.databaseclass.BillDataManager;
 import com.example.pocketledger.R;
 

@@ -2,17 +2,14 @@ package com.example.pocketledger.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ListView;
 import android.widget.TextView;
 
-import com.example.pocketledger.dataclass.Bill;
+import com.example.pocketledger.databaseclass.dataclass.Bill;
 import com.example.pocketledger.databaseclass.BillDataManager;
 import com.example.pocketledger.adapter.BillListAdapter;
 import com.example.pocketledger.R;
