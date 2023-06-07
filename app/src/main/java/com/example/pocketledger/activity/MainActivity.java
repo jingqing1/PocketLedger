@@ -16,11 +16,12 @@ import com.example.pocketledger.dataclass.Bill;
 import com.example.pocketledger.databaseclass.BillDataManager;
 import com.example.pocketledger.adapter.BillListAdapter;
 import com.example.pocketledger.R;
+import com.example.pocketledger.in.OnBillDeleteListener;
 import com.example.pocketledger.view.SlideRecyclerView;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements OnBillDeleteListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
 
         // 初始化适配器
         BillListAdapter adapter = new BillListAdapter(this, billList);
+      adapter.setOnBillDeleteListener(this);
         recyclerView.setAdapter(adapter);
 
         Button add = findViewById(R.id.floatingButton);
@@ -73,6 +75,10 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    public void onBillDeleted() {
+        init();
+    }
     @Override
     protected void onResume() {
         super.onResume();

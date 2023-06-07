@@ -14,6 +14,7 @@ import com.example.pocketledger.activity.BillDetailsActivity;
 import com.example.pocketledger.activity.MainActivity;
 import com.example.pocketledger.databaseclass.BillDataManager;
 import com.example.pocketledger.dataclass.Bill;
+import com.example.pocketledger.in.OnBillDeleteListener;
 
 import java.util.ArrayList;
 
@@ -22,6 +23,12 @@ import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
 public class BillListAdapter extends RecyclerView.Adapter<BillListAdapter.ViewHolder> {
     private ArrayList<Bill> billList;
     private Context context;
+    private OnBillDeleteListener onBillDeleteListener;
+
+    public void setOnBillDeleteListener(OnBillDeleteListener listener) {
+        this.onBillDeleteListener = listener;
+    }
+
 
     public BillListAdapter(Context context, ArrayList<Bill> billList) {
         this.context = context;
@@ -59,7 +66,9 @@ public class BillListAdapter extends RecyclerView.Adapter<BillListAdapter.ViewHo
                 public void onClick(View v) {
                     BillDataManager billDataManager = new BillDataManager(context);
                     billDataManager.deleteBillById(currentBill.getId());
-                    ((MainActivity) context).init();
+                    if (onBillDeleteListener != null) {
+                        onBillDeleteListener.onBillDeleted();
+                    }
 
                 }
             });

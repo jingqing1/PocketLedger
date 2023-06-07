@@ -18,11 +18,13 @@ import com.example.pocketledger.dataclass.Bill;
 import com.example.pocketledger.databaseclass.BillDataManager;
 import com.example.pocketledger.adapter.BillListAdapter;
 import com.example.pocketledger.R;
+import com.example.pocketledger.in.OnBillDeleteListener;
+import com.example.pocketledger.view.SlideRecyclerView;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 
-public class BillStatisticsActivity extends AppCompatActivity implements View.OnClickListener {
+public class BillStatisticsActivity extends AppCompatActivity implements View.OnClickListener, OnBillDeleteListener {
 
     private int year;
     private int month;
@@ -54,8 +56,7 @@ public class BillStatisticsActivity extends AppCompatActivity implements View.On
     private void comInit() {
 
 
-        billDataManager = new BillDataManager(this);
-        billList = billDataManager.getAllBills();
+
         calculatedAmount();
 
         Button btnFilterDay = findViewById(R.id.btn_filter_day);
@@ -67,8 +68,14 @@ public class BillStatisticsActivity extends AppCompatActivity implements View.On
         btnFilterYear.setOnClickListener(this);
     }
 
+    @Override
+    public void onBillDeleted() {
+       calculatedAmount();
+    }
     private void calculatedAmount() {
-        RecyclerView recyclerView = findViewById(R.id.listview);
+        billDataManager = new BillDataManager(this);
+        billList = billDataManager.getAllBills();
+        SlideRecyclerView recyclerView = findViewById(R.id.listview);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
 
@@ -76,6 +83,7 @@ public class BillStatisticsActivity extends AppCompatActivity implements View.On
 
         // 初始化适配器
         BillListAdapter adapter = new BillListAdapter(this, billList);
+        adapter.setOnBillDeleteListener(this);
         recyclerView.setAdapter(adapter);
         outMoney = 0.0;
         inMoney = 0.0;
